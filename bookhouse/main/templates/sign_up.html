@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<<head>
+    <meta charset="UTF-8">
+    <title>register</title>
+    <style>
+        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+        display: none !important;
+        }
+    </style>
+</head>
+
+<body ng-app="registerApp" ng-controller="registerCtrl">
+<div>
+    <form name="myForm">
+    用户名: <input type="text" name="userName" ng-model="user_name" required ng-maxlength="16">
+    <span class="error" ng-show="myForm.userName.$error.required"><font color="#FF0000">用户名不能为空</font></span><br>
+     <span class="error" ng-show="myForm.userName.$error.maxlength"><font color="#FF0000">用户名太长</font></span><br>
+    密 码: <input type="password" name="password" ng-model="user_password" required ng-maxlength="32">
+       <span class="error" ng-show="myForm.password.$error.required"><font color="#FF0000">密码不能为空</font></span><br>
+    <span class="error" ng-show="myForm.password.$error.maxlength"><font color="#FF0000">密码太长</font></span><br>
+        性别:<input type="radio" ng-model="gender" name="sex" id="sex1" ng-value="1" required>男
+        <input type="radio" ng-model="gender" name="sex" id="sex2" ng-value="2">女
+
+    </form>
+    <input ng-click="Mysubmit()" type="submit" value="注册">
+</div>
+<script type="text/javascript" src="{{ url_for('static', filename='src/assets/lib/jquery-1.12.2.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='src/assets/lib/angular/angular.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='src/assets/lib/angular-cookie/angular-cookie.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='src/assets/js/sign_up.js') }}"></script>
+</body>
+</html>

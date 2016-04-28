@@ -21,7 +21,7 @@ def books_api():
         pass
 
 
-@app.route('/api/books/<int:book_id>/', methods=['GET', 'PUT', 'DELETE'])
+@app.route('/api/books/<int:book_id>/', methods=['GET', 'PUT', 'DELETE'])#GET，POST，PUT，DELETE就对应着对这个资源的查，改，增，删4个操作
 @auth_required
 def book_api(book_id):
     if request.method == 'GET':

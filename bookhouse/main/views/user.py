@@ -16,6 +16,8 @@ def sign_up_page():
 
 API_FAIL_CODES['SIGN_UP'] = {
     'USER_NAME_EXISTED': 1,
+    'USER_NAME_NOTEXISTED': 2,
+    'USER_PASSWORD_NOTEXISTED': 3,
 }
 
 
@@ -99,4 +101,70 @@ def sign_in_page():
 @app.route('/api/account/sign-in/', methods=['POST'])
 def sign_in_api():
     if request.method == 'POST':
-        pass
+        try:
+            request_data = request.json
+            if request_data is None:
+                raise ViewProcessJump(code='ILLEGAL_USER_INPUT')
+            validator = Validator({
+                'name': {
+                    'required': True,
+                    'type': 'string',
+                    'maxlength': 16,
+                },
+                'password': {
+                    'required': True,
+                    'type': 'string',
+                    'maxlength': 32,
+                },
+
+            })
+            if not validator.validate(request_data):
+                raise ViewProcessJump(code='ILLEGAL_USER_INPUT')
+
+            name = validator.document.get('name')
+            password = validator.document.get('password')
+            gender = validator.document.get('gender')
+
+            user_existed = User.query.filter(db.text('name = :name')).params(name=name).first()
+            if not user_existed:
+                raise ViewProcessJump(code='USER_NAME_NOTEXISTED')
+            if user_existed.password!=password:
+                raise ViewProcessJump(code='USER_PASSWORD_NOTEXISTED')
+            resp = {
+                'status': 'success',
+                'data': {
+                    'token': str(user_existed.id),
+                    'name': user_existed.name,
+                    'password':user_existed.password,
+                },
+            }
+
+            return jsonify(**resp)
+
+        except ViewProcessJump as e:
+            if e.code in (
+                    'ILLEGAL_USER_INPUT',
+            ):
+                abort(400)
+            elif e.code in (
+                    'USER_NAME_NOTEXISTED',
+            ):
+                resp = {
+                    'status': 'fail',
+                    'data': {
+                        'code': API_FAIL_CODES['SIGN_UP']['USER_NAME_NOTEXISTED'],
+                    },
+                }
+                return jsonify(**resp)
+            elif e.code in (
+                    'USER_PASSWORD_NOTEXISTED',
+            ):
+                resp = {
+                    'status': 'fail',
+                    'data': {
+                        'code': API_FAIL_CODES['SIGN_UP']['USER_PASSWORD_NOTEXISTED'],
+                    },
+                }
+                return jsonify(**resp)
+            else:
+                assert False
