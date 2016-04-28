@@ -20,6 +20,6 @@ def create_app_main():
 
     import bookhouse.main.views
     import bookhouse.main.views.user
-    import bookhouse.main.views.book
+#    import bookhouse.main.views.book
 
     return app
